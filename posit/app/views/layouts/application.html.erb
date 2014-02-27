@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Posit</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <style>
+        
+    </style>
+    <script type="text/javascript">
+
+        //<!-- Put the following code in your JS file or Head Tags ---->
+        /* Moving Sqare */
+
+        $(document).ready(function () {
+            var qutations = null;
+
+            $.ajax({
+                type: "POST",
+                url: "Movingsquares.aspx/GetQuotations",
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    //debugger;
+                    qutations = $.parseJSON('[' + msg.d + ']');
+                }
+            });
+
+            var iNdex = 0;
+            makeDiv(iNdex);
+
+            function makeDiv(iNdex) {
+                var numRand = Math.floor(Math.random() * 501);
+                var divsize = 300;
+                var posx = (Math.random() * ($('body').width() - divsize)).toFixed();
+                var posy = (Math.random() * ($('body').height() - divsize)).toFixed();
+                //debugger;
+                if (qutations != null) {
+                    if (iNdex == qutations.length - 1)
+                        iNdex = 0;
+                    $newdiv = $("<div class='exploding'>" + qutations[iNdex] + "</div>").css({
+                        'left': posx + 'px',
+                        'top': posy + 'px'
+                    });
+                } else {
+
+                    $newdiv = $("<div class='exploding'></div>").css({
+                        'left': posx + 'px',
+                        'top': posy + 'px'
+                    });
+                }
+                $newdiv.appendTo('body').delay(10000).fadeIn(100, function () {
+                    $(this).remove();
+                    iNdex = iNdex + 1;
+                    makeDiv(iNdex);
+                });
+            }
+
+        });
+
+
+        /* End Script moving Sqare */
+
+        function DisplayTime() {
+
+            var f = document.getElementById('Foo');
+            setInterval(function () {
+                f.style.display = (f.style.display == 'none' ? '' : 'none');
+            }, 1000);
+
+            if (!document.all && !document.getElementById)
+                return
+            timeElement = document.getElementById ? document.getElementById("curTime") : document.all.tick2
+            var CurrentDate = new Date()
+            var hours = CurrentDate.getHours()
+            var minutes = CurrentDate.getMinutes()
+            var seconds = CurrentDate.getSeconds()
+            var DayNight = "PM"
+            if (hours < 12) DayNight = "AM";
+            if (hours > 12) hours = hours - 12;
+            if (hours == 0) hours = 12;
+            if (minutes <= 9) minutes = "0" + minutes;
+            if (seconds <= 9) seconds = "0" + seconds;
+            var currentTime = hours + ":" + minutes + ":" + seconds + " " + DayNight;
+            timeElement.innerHTML = "<font style='font-family:verdana, arial,tahoma;font-size:12px;color:#E25984; font-weight:bold;'>" + currentTime + "</b>"
+            setTimeout("DisplayTime()", 1000)
+        }
+        window.onload = DisplayTime;
+    </script>
+    <link href="themes/4/js-image-slider.css" rel="stylesheet" type="text/css" />
+
+
+
+
+<style type="text/css">
+
+
+
+</style>
+
+
+<script type="text/javascript">
+
+    /***********************************************
+    * Simple Marquee (04-October-2012)
+    * by Vic Phillips - http://www.vicsjavascripts.org.uk/
+    ***********************************************/
+
+    var zxcMarquee = {
+
+        init: function (o) {
+            var mde = o.Mode, mde = typeof (mde) == 'string' && mde.charAt(0).toUpperCase() == 'H' ? ['left', 'offsetWidth', 'top', 'width'] : ['top', 'offsetHeight', 'left', 'height'], id = o.ID, srt = o.StartDelay, ud = o.StartDirection, p = document.getElementById(id), obj = p.getElementsByTagName('DIV')[0], sz = obj[mde[1]], clone;
+            p.style.overflow = 'hidden';
+            obj.style.position = 'absolute';
+            obj.style[mde[0]] = '0px';
+            obj.style[mde[3]] = sz + 'px';
+            clone = obj.cloneNode(true);
+            clone.style[mde[0]] = sz + 'px';
+            clone.style[mde[2]] = '0px';
+            obj.appendChild(clone);
+            o = this['zxc' + id] = {
+                obj: obj,
+                mde: mde[0],
+                sz: sz
+            }
+            if (typeof (srt) == 'number') {
+                o.dly = setTimeout(function () { zxcMarquee.scroll(id, typeof (ud) == 'number' ? ud : -1); }, srt);
+            }
+            else {
+                this.scroll(id, 0)
+            }
+        },
+
+        scroll: function (id, ud) {
+            var oop = this, o = this['zxc' + id], p;
+            if (o) {
+                ud = typeof (ud) == 'number' ? ud : 0;
+                clearTimeout(o.dly);
+                p = parseInt(o.obj.style[o.mde]) + ud;
+                if ((ud > 0 && p > 0) || (ud < 0 && p < -o.sz)) {
+                    p += o.sz * (ud > 0 ? -1 : 1);
+                }
+                o.obj.style[o.mde] = p + 'px';
+                o.dly = setTimeout(function () { oop.scroll(id, ud); }, 50);
+            }
+        }
+    }
+
+    function init() {
+
+        zxcMarquee.init({
+            ID: 'marquee1',     // the unique ID name of the parent DIV.                        (string)
+            Mode: 'Vertical',   //(optional) the mode of execution, 'Vertical' or 'Horizontal'. (string, default = 'Vertical')
+            StartDelay: 2000,   //(optional) the auto start delay in milli seconds'.            (number, default = no auto start)
+            StartDirection: -1  //(optional) the auto start scroll direction'.                  (number, default = -1)
+        });
+
+        zxcMarquee.init({
+            ID: 'marquee2',     // the unique ID name of the parent DIV.                        (string)
+            Mode: 'Horizontal', //(optional) the mode of execution, 'Vertical' or 'Horizontal'. (string, default = 'Vertical')
+            StartDelay: 2000,   //(optional) the auto start delay in milli seconds'.            (number, default = no auto start)
+            StartDirection: -1  //(optional) the auto start scroll direction'.                  (number, default = -1)
+        });
+
+    }
+
+    if (window.addEventListener)
+        window.addEventListener("load", init, false)
+    else if (window.attachEvent)
+        window.attachEvent("onload", init)
+    else if (document.getElementById)
+        window.onload = init
+
+
+</script>
+
+<style>
+	
+	// Place all the styles related to the home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.homepage
+{
+  margin-left: 3em;
+  margin-right: 3em;
+}
+
+
+/*for moving square */
+        
+        div.box {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background-color: orange;
+        }
+
+        div.exploding {
+            position: absolute;
+            width: 0px;
+            height: 0px;
+            border:3px solid blue;
+            border-radius:3px 5px;
+            background-color: grey;
+        }
+        /*end moving square */
+        
+        
+        html body div#wrap div.header-block div.header-bar div.margin-block div.nav-collapse ul.header-nav-button-block
+        {
+            margin: 1em 0 0 0;
+            padding: 0;
+            text-align: right;
+            height: 100%;
+        }
+        
+        li
+        {
+            display: inline;
+            list-type: none;
+        }
+        
+        .navbar .nav > li {
+    float: left;
+}
+li {
+    display: inline;
+}
+
+li {
+    line-height: 20px;
+}
+
+.navbar .nav > li > a {
+    color: #777777;
+    float: none;
+    padding: 8px 10px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+table tbody tr td
+{
+	margin:0;
+	padding:0;
+}
+        
+        a.glidebutton
+        {
+            display: inline-block;
+            position: relative;
+            color: #FFFFFF; /* default color */
+            text-decoration: none;
+            font: bold 12px Arial; /* font settings */
+            letter-spacing: 0px; /* font settings */
+            overflow: hidden;
+            height: 35px; /* height of each button */
+            text-align: center;
+            -moz-transition: all 0.3s ease-in-out; /* Enable CSS transition between property changes */
+            -webkit-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        a.glidebutton > span:first-child
+        {
+            /* first span inside button */
+            position: relative;
+            display: block;
+            height: 100%;
+            padding: 6px; /* padding of button */
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -moz-transition: all 0.3s ease-in-out; /* Enable CSS transition between property changes */
+            -webkit-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        a.glidebutton > span:first-child:after
+        {
+            /* CSS generated content */
+            content: attr(data-text); /* Duplicate text of span markup */
+            display: block;
+            width: 100%;
+            height: 100%;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: inherit;
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
+        
+        a.glidebutton:hover
+        {
+            color: #FFFFFF; /* color of button on hover */
+            background: #298a08; /* bg color of button on hover */
+            box-shadow: 0 0 4px #DDD;
+        }
+        
+        a.glidebutton:hover > span:first-child
+        {
+            -moz-transform: translateY(-100%);
+            -webkit-transform: translateY(-100%);
+            -ms-transform: translateY(-100%);
+            -o-transform: translateY(-100%);
+            transform: translateY(-100%);
+        }
+        
+.container_run{
+position: absolute;
+width: 380px; /*marquee width */
+height: 270px; /*marquee height */
+overflow: hidden;
+background-color: white;
+border: 7px solid blue;
+padding: 4px;
+padding-left: 5px;
+padding-right: 15px;
+border-radius:10px;
+margin-left: 85%; 
+margin-top: -1430px;
+}
+
+
+.dna-message
+{
+  background-color: #2284A1;
+  color: #FFFFFF; 
+  text-align:center;
+  margin-top:0;
+  margin-bottom:0.5em;
+}
+.dna-message h4
+{
+  margin-bottom: 0;
+  margin-top:0;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
+}
+
+div.header-block
+{
+  font-family: "Open Sans";
+  color: #FFFFFF;
+   margin-bottom:0;
+  box-shadow: 1px 1px 1px #b2b2b2;
+  -webkit-box-shadow: 1px 1px 1px #b2b2b2;
+}
+
+div.header-bar
+{
+	background-color: #FFFFFF;
+  padding: 0;
+  min-height: 5em;
+  font-family: "Open Sans";
+		
+}
+
+.header-bar .margin-block
+{
+  margin-left: 2.5em;
+  margin-right:2.5em;
+}
+
+.header-bar .header-logo
+{
+  position: absolute;
+  width: 17em;
+  max-height:6em;
+
+  
+}
+
+html body div#wrap div.header-block div.header-bar div.margin-block div.nav-collapse ul.header-nav-button-block {
+    height: 100%;
+    margin: 1em 0 0;
+    padding: 0;
+    text-align: right;
+}
+
+.navbar .nav.pull-right {
+    float: right;
+    margin-right: 0;
+}
+
+.currenttime
+{
+	margin-left: 60%;
+	max-height:1em;
+	min-width:40%;
+}
+
+	
+	
+</style>
+
+    <script src="themes/4/js-image-slider.js" type="text/javascript"></script>
+    <link href="generic.css" rel="stylesheet" type="text/css" />
+    
+</head>
+<body style="background-color:#FAFAFA" onload="DisplayTime();">
+	<div id="wrap">			
+		<%= render 'layouts/header' %>
+	</div>
+	
+	<ul class="currenttime" style="margin-right:1em;margin-top:0.25em;margin-bottom:0.25em;">	
+      	<li class="pull-right">
+      		
+                        <table cellpadding="0" cellspacing="0" >
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;
+                                </td>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </td>
+                                <td style= " height: 2px;">
+                                    <!-- Put the following code in your web page where you want to show the time ---->
+                                    <span id="curTime"></span>&nbsp;&nbsp;
+                                    <script language="javascript" type="text/javascript">
+
+                                        var mydate = new Date()
+                                        var year = mydate.getYear()
+                                        if (year < 1000)
+                                            year += 1900
+                                        var day = mydate.getDay()
+                                        var month = mydate.getMonth()
+                                        var daym = mydate.getDate()
+                                        if (daym < 10)
+                                            daym = "0" + daym
+                                        var dayarray = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+                                        var montharray = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+                                        document.write("<small><font face='BrowalliaUPC' size='3' color='#0F4861'><b>" + dayarray[day] + ", " + montharray[month] + " " + daym + ", " + year + "</b></font></small>")
+                                    </script>
+                                </td>
+                            </tr>
+                        </table>
+                     </li>
+				</ul>
+
+<%= yield %>
+
+</body>
+</html>
